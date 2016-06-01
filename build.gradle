@@ -4,6 +4,10 @@ plugins {
 
 group 'uk.co.dwdev'
 
+project.ext {
+    cucumberVersion = '1.2.4'
+    junitVersion = '4.12'
+}
 
 //task wrapper(type: Wrapper) {
 //  gradleVersion = '2.9'
@@ -30,4 +34,23 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile 'info.cukes:cucumber-java:' + cucumberVersion
+    testCompile 'info.cukes:cucumber-junit:' + cucumberVersion
+    testCompile 'junit:junit:' + junitVersion
+}
+
+test {
+    testLogging.showStandardStreams = true
+    systemProperties System.getProperties()
+}
+
+task cucumber() {
+    dependsOn assemble, compileTestJava
+    doLast {
+        javaexec {
+            main = "cucumber.api.cli.Main"
+            classpath = configurations.testRuntime + sourceSets.main.output + sourceSets.test.output
+            args = ['--plugin', 'pretty', '--glue', 'stepdefinitions', 'src/test/resources']
+        }
+    }
 }
