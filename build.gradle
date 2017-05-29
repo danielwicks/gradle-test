@@ -41,6 +41,8 @@ test {
 
 task cucumber() {
     dependsOn assemble, compileTestJava
+    description = "Run the Cucumber JVM suite"
+    group = "Verification"
     doLast {
         javaexec {
             main = "cucumber.api.cli.Main"
